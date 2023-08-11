@@ -1,8 +1,8 @@
 # Estructura de Datos y Algoritmos Fundamentales
 ### TC1031 - Gpo 608
 ### Nombre: 
-## Escribe tu nombre
+## Alejandro Barrera Bejarano
 ### Matrícula: 
-## Escribe tu matrícula
+## A01254672
 ### Carrera: 
-## Escribe las iniciales de tu carrera
+## ITC
