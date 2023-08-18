@@ -12,6 +12,8 @@ class BigO{
 
 BigO::BigO(){}
 
+//O(n), donde n es el tamaño del vector nums.
+
 int BigO::SumOddIte(std::vector<int>nums)
 {
     int sum = 0;
@@ -24,6 +26,8 @@ int BigO::SumOddIte(std::vector<int>nums)
     return sum;
 }
 
+
+//O(n), donde n es el tamaño del vector nums.
 int BigO::SumOddRecTrick(std::vector<int> nums, int index, int sum)
 {
     if (index >= nums.size()) {
@@ -37,6 +41,8 @@ int BigO::SumOddRecTrick(std::vector<int> nums, int index, int sum)
     return SumOddRecTrick(nums, index + 1, sum);
 }
 
+
+//O(n), donde n es el tamaño del vector nums.
 int BigO::SumOddRec(std::vector<int> nums)
 {
     return SumOddRecTrick(nums,0,0);
