@@ -225,13 +225,7 @@ std::vector<T> MergeSort(std::vector<T> data)
 
 
 template <class T>
-std::vector<T> QuickSort(std::vector<T>data)
-{
-    if (data.begin() < data.end())
-    {
-        return
-    }
-};
+std::vector<T> QuickSort(std::vector<T>data){};
 
 int main()
 {
