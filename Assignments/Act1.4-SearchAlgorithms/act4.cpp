@@ -1,3 +1,9 @@
+// Aejandro Barrera Bejarano
+// A01254672
+// ITC
+// 25/08/2023
+
+
 #include <iostream>
 #include "act4.hpp"
 #include <chrono>
