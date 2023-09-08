@@ -1,3 +1,9 @@
+// Aejandro Barrera Bejarano
+// A01254672
+// ITC
+// 28/08/2023
+
+
 #include <iostream>
 #include <vector>
 #include <chrono>
@@ -31,9 +37,16 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec) {
 }
 
 template <class T>
+vector<T> operator+(const vector<T>& a, const vector<T>& b) {
+    vector<T> result = a;
+    result.insert(result.end(), b.begin(), b.end());
+    return result;
+};
+
+template <class T>
 void test(std::vector<T>& data, const std::vector<std::vector<T>(*)(std::vector<T>)>& functions)
 {
-    std::vector<std::string> names = {"Swap Sort", "Bubble Sort", "Selection Sort", "Insertion Sort", "MergeSort"};
+    std::vector<std::string> names = {"Swap Sort", "Bubble Sort", "Selection Sort", "Insertion Sort", "MergeSort", "QuickSort"};
     int i = 0;
     for (auto func : functions) 
     {
@@ -53,29 +66,22 @@ void test(std::vector<T>& data, const std::vector<std::vector<T>(*)(std::vector<
     }
 }
 
-template <class T>
-std::vector<T> Swapsort(std::vector<T> data)
-
-{
+template<class T>
+std::vector<T> Swapsort(vector<T> data) {
+    
     int comparaciones = 0;
     int intercambios = 0;
-    int x = 0;
-    while (x != 1)
-    {
-        int y = 0;
-        for(int i = 0; i < data.size() -1; i++)
-        {
+
+    for (int i=0; i<data.size()-1; i++) {
+        for (int j=i+1; j<data.size(); j++) {
             comparaciones++;
-            if (data[i] > data[i+1])
-            {
-                std::swap(data[i], data[i+1]);
+            
+            if (data[i] > data[j]) {
+                
+                swap(data[i], data[j]);
+                
                 intercambios++;
-                y = 1;
             }
-        }
-        if(y == 0)
-        {
-            x = 1;
         }
     }
     
@@ -223,15 +229,42 @@ std::vector<T> MergeSort(std::vector<T> data)
 
 };
 
-
 template <class T>
-std::vector<T> QuickSort(std::vector<T>data){};
+std::vector<T> QuickSort(std::vector<T> data)
+{
+   if (data.size() <= 1)
+   {
+       return data;
+   }
+   std::vector<T> pivot = {data[0]};
+   std::vector<T> less, greater;
+   
+   
+   for (int i = 1; i < data.size(); i++)
+   {
+       if (data[i] <= data[0])
+       {
+           less.push_back(std::move(data[i]));
+       }
+       else 
+       {
+           greater.push_back(std::move(data[i]));
+       }
+   }
+   less = QuickSort(less);
+   greater = QuickSort(greater);
+   data = std::move(QuickSort(less)) + std::move(pivot) + std::move(QuickSort(greater));
+
+   return data;
+};
+
+
 
 int main()
 {
     std::vector<int> data = {46,57,86,73,43,21,23};
 
-    std::vector<std::vector<int>(*)(std::vector<int>)> functions = {Swapsort, Bubblesort, SelectionSort, InsertionSort,MergeSort};
+    std::vector<std::vector<int>(*)(std::vector<int>)> functions = {Swapsort, Bubblesort, SelectionSort, InsertionSort,MergeSort,QuickSort};
 
     test(data, functions);
 
