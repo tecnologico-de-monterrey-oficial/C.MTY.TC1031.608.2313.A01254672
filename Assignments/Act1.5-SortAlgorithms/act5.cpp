@@ -1,7 +1,7 @@
 // Aejandro Barrera Bejarano
 // A01254672
 // ITC
-// 28/08/2023
+// 08/09/2023
 
 
 #include <iostream>
@@ -25,6 +25,30 @@ void getTime(chrono::high_resolution_clock::time_point begin, chrono::high_resol
     printf("Tiempo de ejecución: %.8f seconds.\n", elapsed.count() * 1e-9);
 }
 
+// Crea una lista aleatoria de caracteres
+void createListChar(vector<char> &list, int quantity)
+{
+  for (int i = 0; i < quantity; i++)
+  {
+    int num = 91;
+    while (num >= 91 && num <= 96)
+    {
+      num = rand() % 58 + 65;
+    }
+    list.push_back(char(num));
+  }
+}
+
+
+// Crea una lista aleatoria de enteros
+void createListInt(vector<int> &list, int quantity)
+{
+  for (int i = 0; i < quantity; i++)
+  {
+    int num = rand() % 1000 + 1;
+    list.push_back(num);
+  }
+}
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec) {
@@ -46,7 +70,7 @@ vector<T> operator+(const vector<T>& a, const vector<T>& b) {
 template <class T>
 void test(std::vector<T>& data, const std::vector<std::vector<T>(*)(std::vector<T>)>& functions)
 {
-    std::vector<std::string> names = {"Swap Sort", "Bubble Sort", "Selection Sort", "Insertion Sort", "MergeSort", "QuickSort"};
+    std::vector<std::string> names = {"Swap Sort", "Bubble Sort", "Selection Sort", "Insertion Sort", "MergeSort", "QuickSort","RadixSort"};
     int i = 0;
     for (auto func : functions) 
     {
@@ -236,37 +260,75 @@ std::vector<T> QuickSort(std::vector<T> data)
    {
        return data;
    }
-   std::vector<T> pivot = {data[0]};
+   
+   T pivot = data[0];
+
    std::vector<T> less, greater;
-   
-   
    for (int i = 1; i < data.size(); i++)
    {
-       if (data[i] <= data[0])
-       {
+       if (data[i] <= pivot)
            less.push_back(std::move(data[i]));
-       }
        else 
-       {
            greater.push_back(std::move(data[i]));
-       }
    }
-   less = QuickSort(less);
-   greater = QuickSort(greater);
-   data = std::move(QuickSort(less)) + std::move(pivot) + std::move(QuickSort(greater));
+   less = QuickSort(std::move(less));
+   greater = QuickSort(std::move(greater));
 
-   return data;
+   std::vector<T> result;
+   result.reserve(less.size() + 1 + greater.size());
+   result.insert(result.end(), less.begin(), less.end());
+   result.push_back(pivot);
+   result.insert(result.end(), greater.begin(), greater.end());
+
+   return result;
+}
+
+
+template <class T>
+std::vector<T> RadixSort(std::vector<T> data)
+{
+    if (data.empty())
+        return data;
+
+    T max = data[0];
+    for (int i = 1; i < data.size(); i++)
+        if (data[i] > max)
+            max = data[i];
+            
+    for (int exp = 1; max / exp > 0; exp *= 10)
+    {
+        std::vector<T> output(data.size());
+        std::vector<int> count(10, 0);
+
+        for (int i = 0; i < data.size(); i++)
+            count[(data[i] / exp) % 10]++;
+
+        for (int i = 1; i < 10; i++)
+            count[i] += count[i - 1];
+
+        for (int i = data.size() - 1; i >= 0; i--)
+        {
+            output[count[(data[i] / exp) % 10] - 1] = data[i];
+            count[(data[i] / exp) % 10]--;
+        }
+        for (int i = 0; i < data.size(); i++)
+            data[i] = output[i];
+    }
+
+    return data;
 };
-
 
 
 int main()
 {
+    vector<int> list;
+    createListInt(list, 1000);
+    vector<char> listchar;
+    createListChar(listchar,1000);
     std::vector<int> data = {46,57,86,73,43,21,23};
-
-    std::vector<std::vector<int>(*)(std::vector<int>)> functions = {Swapsort, Bubblesort, SelectionSort, InsertionSort,MergeSort,QuickSort};
-
-    test(data, functions);
+    std::vector<std::vector<int>(*)(std::vector<int>)> functions = {Swapsort, Bubblesort, SelectionSort, InsertionSort,MergeSort,QuickSort,RadixSort};
+    std::vector<std::vector<char>(*)(std::vector<char>)> functionschar = {Swapsort, Bubblesort, SelectionSort, InsertionSort,MergeSort,QuickSort,RadixSort};
+    test(listchar, functionschar);
 
 
     return 0;
