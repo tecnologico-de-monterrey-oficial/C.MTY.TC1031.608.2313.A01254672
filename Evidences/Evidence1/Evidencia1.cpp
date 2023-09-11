@@ -151,19 +151,46 @@ void Binary_search(std::vector<std::pair<std::string, std::string>> data, long l
 {
     std::vector<std::string> results;
 
-    // Iterate over the data to find values within the given range
-    for (int i = 0; i < data.size(); i++)
+    // Do binary search to find the first record in the date range
+    int left = 0;
+    int right = data.size() - 1;
+    int initial_date_position = -1;
+    while (left <= right)
+    {
+        int mid = left + (right - left) / 2;
+        long long current_date = std::stoll(data[mid].first);
+
+        if (current_date < initial_date)
+        {
+            left = mid + 1;
+        }
+        else if (current_date > initial_date)
+        {
+            right = mid - 1;
+        }
+        else
+        {
+            initial_date_position = mid;
+            break;
+        }
+    }
+    if (initial_date_position == -1)
+    {
+        initial_date_position = left;
+    }
+
+    // Iterate to find values within the given range
+    for (int i = initial_date_position; i < data.size(); i++)
     {   
         long long index = std::stoll(data[i].first);
-        if (index > initial_date && index < final_date)
-        {
-            results.push_back(data[i].second);
-        }
-        else if (index > final_date)
+        if (index > final_date)
         {
             break;
         } 
+        results.push_back(data[i].second);
     }
+
+    //Overwrite the file with the results
     std::ofstream outfile("range608.txt");
     if (outfile.is_open()) 
     {
@@ -173,6 +200,8 @@ void Binary_search(std::vector<std::pair<std::string, std::string>> data, long l
         }
         outfile.close();
     }
+
+    //Display results in the terminal
     for (auto record : results) 
         {
             std::cout << record << std::endl;
