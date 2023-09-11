@@ -329,6 +329,7 @@ int main()
     std::vector<std::vector<int>(*)(std::vector<int>)> functions = {Swapsort, Bubblesort, SelectionSort, InsertionSort,MergeSort,QuickSort,RadixSort};
     std::vector<std::vector<char>(*)(std::vector<char>)> functionschar = {Swapsort, Bubblesort, SelectionSort, InsertionSort,MergeSort,QuickSort,RadixSort};
     test(listchar, functionschar);
+    test(list,functions);
 
 
     return 0;
