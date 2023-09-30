@@ -26,7 +26,7 @@ std::string Month_to_Num(std::string month)
         {"Dec", "12"}
     };
     
-    // Look up the month in the hash table and return its value
+    // Search the month in the hash table and return its value
     return month_map[month];
 }
 
