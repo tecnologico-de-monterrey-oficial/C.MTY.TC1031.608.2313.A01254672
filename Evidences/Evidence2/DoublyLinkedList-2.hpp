@@ -1,6 +1,15 @@
 #include <iostream>
-#include "nodeDoubly.hpp"
+#include "nodeDoubly-2.hpp"
 #include <stdexcept>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <chrono>
+#include <map>
+#include <string>
+#include <algorithm>
+#include <utility>
 
 using namespace std;
 
@@ -17,6 +26,9 @@ public:
     DoublylinkedList();
     ~DoublylinkedList();
     int getSize();
+    Node<T>* getHead();
+    Node<T>* getTail();
+    Node<T>* getPrev();
     void addFirst(T data);
     void addLast(T data);
     void insert(int index, T data);
@@ -34,7 +46,13 @@ public:
     void sort();
     void removeDuplicates();
     bool isEmpty();
+    void quicksort(Node<T>* left, Node<T>* right);
+    void swapSort(Node<T>* left, Node<T>* right);
     void print();
+    void print2Format();
+    void showValues(const std::string& firstValue, const std::string& lastValue);
+    void reverseIP();
+    void SumOfData();
 };
 
 template <class T>
@@ -51,6 +69,24 @@ template <class T>
 int DoublylinkedList<T>::getSize()
 {
     return size;
+}
+
+template <class T>
+Node<T>* DoublylinkedList<T>::getHead()
+{
+    return head;
+}
+
+template <class T>
+Node<T>* DoublylinkedList<T>::getTail()
+{
+    return tail;
+}
+
+template <class T>
+Node<T>* DoublylinkedList<T>::getPrev()
+{
+    return prev;
 }
 
 template<class T> 
@@ -323,12 +359,181 @@ bool DoublylinkedList<T>::isEmpty() {
 }
 
 template <class T>
+void DoublylinkedList<T>::quicksort(Node<T>* left, Node<T>* right) {
+    if (left == nullptr || right == nullptr || left == right || left->prev == right) {
+        return;
+    }
+
+    // Choose pivot element (e.g. first word of each line)
+    std::string pivot = left->data.substr(0, 14);
+
+    // Partition the list around the pivot element
+    Node<T>* i = left;
+    Node<T>* j = right;
+
+    while (true) {
+        // Move i pointer to the right until data[i] is greater than or equal to pivot
+        while (i != right && i->data.substr(0, 14).compare(pivot) < 0) {
+            i = i->next;
+        }
+
+        // Move j pointer to the left until data[j] is less than or equal to pivot
+        while (j != left && j->data.substr(0, 14).compare(pivot) > 0) {
+            j = j->prev;
+        }
+
+        // If i and j have crossed, break out of the loop
+        if (i == j || i->prev == j) {
+            break;
+        }
+
+        // Swap data[i] and data[j]
+        std::swap(i->data, j->data);
+    }
+
+    // Swap data[left] and data[j]
+    std::swap(left->data, j->data);
+
+    // Recursively apply quicksort to sublists
+    quicksort(left, j->prev);
+    quicksort(j->next, right);
+}
+template <class T>
+void DoublylinkedList<T>::swapSort(Node<T>* left, Node<T>* right) {
+    if (left == nullptr || right == nullptr || left == right || left->prev == right) {
+        return;
+    }
+
+    Node<T>* i = left;
+    while (i != right) {
+        Node<T>* j = i->next;
+        while (j != left) {
+            if (j->prev->data.substr(0, 14).compare(j->data.substr(0, 14)) > 0) {
+                std::swap(j->prev->data, j->data);
+            }
+            j = j->prev;
+        }
+        i = i->next;
+    }
+}
+
+
+template <class T>
 void DoublylinkedList<T>::print()
 {
+    std::ofstream outfile("output602-1.txt");
     Node<T>* current = head;
-    while (current != nullptr) {
-        std::cout << current->data << " ";
-        current = current->next;
+    if (outfile.is_open()) {
+        while (current != nullptr) {
+                outfile << current->data.substr(15) << std::endl;
+                current = current->next;
+        }
+        outfile.close();
     }
-    std::cout << std::endl;
+}
+
+template <class T>
+void DoublylinkedList<T>::print2Format(){
+
+    std::multimap<std::string, std::pair<int, std::string>> lines;
+    std::ifstream infile("output602-1.txt");
+    std::ofstream outfile("output602-2.txt");
+    std::string currLine;
+
+    if (outfile.is_open()) {
+        int lineNumber = 0;
+        while (std::getline(infile, currLine)) {
+            std::istringstream iss(currLine);
+            std::string word, line, ip;
+            int count = 0;
+            while (iss >> word) {
+                ++count;
+                if (count == 5) {
+                    ip = word;
+                }
+                else{
+                    line += word + " ";
+                }
+            }
+            std::string defLine = ip + " " + line;
+            lines.insert(std::make_pair(ip, std::make_pair(lineNumber, defLine)));
+            ++lineNumber;
+        }
+        for (auto& p : lines) {
+        outfile << p.second.second << std::endl;
+        }
+        outfile.close();
+    }
+    infile.close();
+}
+
+template <class T>
+void DoublylinkedList<T>::showValues(const std::string& firstValue, const std::string& lastValue) {
+    std::ifstream infile("output602-2.txt");
+    std::ofstream outfile("iprange602-a.txt");
+    std::string currLine;
+    if (outfile.is_open()) {
+        int lineNumber = 0;
+        while (std::getline(infile, currLine)) {
+            std::istringstream iss(currLine);
+            std::string word, line, ip;
+            int count = 0;
+            while (iss >> word) {
+                ++count;
+                if (count == 1) {
+                    ip = word;
+                }
+                else{
+                    line += word + " ";
+                }
+            }
+            std::string defLine = ip + " " + line;
+            if (ip >= firstValue && ip <= lastValue){
+                outfile << defLine << std::endl;
+            }
+        }
+        outfile.close();
+    }
+    infile.close();
+}
+
+template <class T>
+void DoublylinkedList<T>::reverseIP() {
+    std::ifstream infile("iprange602-a.txt");
+    std::ofstream outfile("iprange602-d.txt");
+    std::vector<std::string> lines;
+    std::string line;
+    
+    while (std::getline(infile, line)) {
+        lines.push_back(line);
+    }
+
+    std::reverse(lines.begin(), lines.end());
+
+    for (const auto& line : lines) {
+        outfile << line << std::endl;
+    }
+    outfile.close();
+    infile.close();
+}
+
+template <class T>
+void DoublylinkedList<T>::SumOfData() {
+    std::ifstream infile("output602-2.txt");
+    std::string line;
+
+    std::map<std::string, int> counts;
+
+    while (std::getline(infile, line)) {
+        std::istringstream iss(line);
+        std::string ip, month, day, year, time, description;
+        if (iss >> ip >> month >> day >> year >> time >> description) {
+            std::string yearMonth = year + "-" + month;
+            counts[yearMonth]++;
+        }
+    }
+    infile.close();
+    for (const auto& count : counts) {
+        std::cout << count.first << ": " << count.second << " IP's" << std::endl;
+    }
 }

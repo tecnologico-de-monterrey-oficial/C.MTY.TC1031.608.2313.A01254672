@@ -1,4 +1,6 @@
 #include <iostream>
+#include "DoublyLinkedList-2.hpp"
+#include <stdexcept>
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -8,7 +10,9 @@
 #include <algorithm>
 #include <utility>
 
-#include "DoublyLinkedList.hpp"
+using namespace std;
+
+
 
 
 std::string Month_to_Num(std::string month)
@@ -32,7 +36,7 @@ std::string Month_to_Num(std::string month)
     return month_map[month];
 }
 
-std::string Fix_date_format(std::string& input) 
+void Fix_date_format(std::string& input) 
 {
     std::istringstream iss(input);
     std::string month, day, year, hour;
@@ -50,11 +54,11 @@ std::string Fix_date_format(std::string& input)
         }
     }
     // Concatenate the word in the format of preference
-    std::string result = year + month + day + new_hour;
-    return result;
+    input = year + month + day + new_hour;
+    //return result;
 }
 
-void ReadFile(const std::string& file, DoublyLinkedList<std::pair<std::string, std::string>>& list) 
+void ReadFile(const std::string& file, DoublylinkedList<std::string>& list) 
 {
   std::ifstream infile(file);
   std::string line;
@@ -76,102 +80,70 @@ void ReadFile(const std::string& file, DoublyLinkedList<std::pair<std::string, s
           std::string month = Month_to_Num(word);
           date += month + " "; 
         }
-        else
+        if (words > 0 && words < 4)
         {
           date += word + " ";
         }
         words++;
       }
-
       message += line;
-      list.addLast(std::make_pair(Fix_date_format(date), message)); 
+      Fix_date_format(date);
+      date += " " + message;
+      list.addLast(date); 
     }
     infile.close();
   }
 }
-
-void QuickSort(std::vector<std::pair<std::string, std::string>>& data)
-{
-    if (data.size() <= 1)
-    {
-        return;
-    }
-    std::pair<std::string, std::string> pivot = data[0];
-    std::vector<std::pair<std::string, std::string>> less, greater;
-    for (int i = 1; i < data.size(); i++)
-    {
-        if (data[i].first <= pivot.first) //Fill the less vector with all the elements that have a key value less than or equal to the pivot
-        {
-            less.push_back(data[i]);
-        }
-        else
-        {
-            greater.push_back(data[i]); //Fill the less vector with all the elements that have a key value greater than the pivot
-        }  
-    }
-    // Repeat the step two
-    QuickSort(less); 
-    QuickSort(greater);
-    //Time to concatenate the sorted less and greater vectors with the pivot in between to form the final sorted vector
-    data.clear();
-    data.reserve(less.size() + 1 + greater.size());
-    data.insert(data.end(), less.begin(), less.end());
-    data.push_back(pivot);
-    data.insert(data.end(), greater.begin(), greater.end());
-
-    std::ofstream outfile("output608.txt");
-    if (outfile.is_open()) 
-    {
-        for (auto record : data) 
-        {
-            outfile << record.second << std::endl;
-        }
-        outfile.close();
-    }
-}
-
-
-void QuickSort(DoublyLinkedList<std::pair<std::string, std::string>>& list) 
+/*
+void QuickSort(DoublyLinkedList<string>& myList) 
 {
 
-  if (list.getSize() <= 1) {
+  if (myList.getSize() <= 1) {
     return;
   }
 
-  std::pair<std::string, std::string> pivot = list[0];
+  std::pair<std::string, std::string> pivot = myList[0];
 
-  DoublyLinkedList<std::pair<std::string, std::string>> less;
-  DoublyLinkedList<std::pair<std::string, std::string>> greater;
+  DoublyLinkedList<std::string> less;
+  DoublyLinkedList<std::string> greater;
 
-  for (int i = 1; i < list.getSize(); i++) {
-    if (list[i].first <= pivot.first) {
-      less.addLast(list[i]);
+  for (int i = 1; i < myList.getSize(); i++) {
+    if (myList[i].first <= pivot.first) {
+      less.addLast(myList[i]);
     }
     else {
-      greater.addLast(list[i]); 
+      greater.addLast(myList[i]); 
     }
   }
 
   QuickSort(less);
   QuickSort(greater);
 
-  list.clear();
+  myList.clear();
   
   // Concatenate the sorted lists 
-  list = less;
-  list.addLast(pivot);
-  list = greater;
+  myList = less;
+  myList.addLast(pivot);
+  myList = greater;
   
   // Write sorted data to output file
   std::ofstream outfile("output602-1.out");
   if (outfile.is_open()) {
-    for (int i = 0; i < list.getSize(); i++) {
-      outfile << list[i].second << "\n";
+    for (int i = 0; i < myList.getSize(); i++) {
+      outfile << myList[i].second << "\n";
+    }
+    outfile.close();
+  }
+  std::ofstream outfile("output602-1.out");
+  if (outfile.is_open()) {
+    for (int i = 0; i < myList.getSize(); i++) {
+      outfile << myList[i].second << "\n";
     }
     outfile.close();
   }
 }
-
+*/
+/*
 long long fill_date(std::string date)
 {
     std::string year, month, day, hour;
@@ -193,7 +165,7 @@ long long fill_date(std::string date)
     return date_int;
 }
 
-void Binary_search(DoublyLinkedList<std::pair<std::string, std::string>> list, long long initial_date, long long final_date) {
+void Binary_search(DoublyLinkedList<std::string> list, long long initial_date, long long final_date) {
 
   DoublyLinkedList<std::string> results;
 
@@ -250,35 +222,39 @@ void Binary_search(DoublyLinkedList<std::pair<std::string, std::string>> list, l
           std::cout << record << std::endl;
       }
 }
+*/
 
 
+int main(){
+  DoublylinkedList<string> myList;
+  ReadFile("log608-2.txt", myList);
+  myList.swapSort(myList.getHead(), myList.getTail());
+  myList.print();
+  myList.print2Format();
+  int choice;
+  std::string firstValue, lastValue;
+  bool success;
 
-int main()
-{
-    DoublyLinkedList<std::pair<std::string, std::string>> data;
-    ReadFile("log608-2.txt", data);
-    QuickSort(data);
-    
-    int option = 99;
-    while (option != 0)
-    {
-        std::cout << std::endl;
-        std::cout << "Bienvenido al buscador de registros (PRESS 1 to continue | PRESS 0 to exit)... --->"; std::cin >> option;
-        if (option == 0)
-            break;
-        std::cout << std::endl;
-
-        std::string initial_date;
-        long long initial_date_int = fill_date(initial_date);
-
-        std::string final_date;
-        long long final_date_int = fill_date(final_date);
-
-        std::cout << "(PRESS 1 to search | PRESS 2 to enter new dates)... -->"; std::cin >> option;
-        if (option == 1)
-        {
-            Binary_search(data,initial_date_int,final_date_int);
+  do {
+      cout << "\nBienvenido.." << endl;
+      cout << "-----------------------" << endl;
+      cout << "1. Rango de IP's" << endl;
+      cout << "2. Salir" << endl;
+      cin>>choice;
+      switch(choice) {
+            case 2:
+                cout << "\nGracias por participar:)" << endl;
+                break;
+            case 1:
+                cout << "\nIngrese el inicio del rango: ";
+                cin >> firstValue;
+                cout << "\nIngrese el fin del rango: ";
+                cin >> lastValue;
+                myList.showValues(firstValue, lastValue);
+                myList.reverseIP();
+                myList.SumOfData();
+                break;
         }
-        std::cout << std::endl;
-    }
-}
+  
+  }while(choice != 2);
+};

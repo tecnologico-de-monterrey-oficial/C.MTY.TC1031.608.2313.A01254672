@@ -1,0 +1,11 @@
+10.14.0.111 Jun 01 2022 06:54:54 Configuration errors 
+10.14.0.113 Feb 24 2022 13:10:03 Security breaches 
+10.14.0.114 Jun 20 2022 20:50:44 Security breaches 
+10.14.0.127 Apr 21 2022 08:53:14 Data corruption 
+10.14.0.130 Jun 15 2023 02:57:08 Social engineering attacks 
+10.14.0.147 Jan 27 2022 16:07:31 Broken authentication and session management 
+10.14.0.152 Aug 14 2023 23:54:22 Unencrypted communication 
+10.14.0.160 Jan 13 2023 19:01:02 SQL injection 
+10.14.0.189 Sep 28 2022 11:54:20 Load balancing issues 
+10.14.0.196 Apr 17 2023 17:23:45 Application error 
+10.14.0.219 Nov 12 2022 07:23:20 Application error 
